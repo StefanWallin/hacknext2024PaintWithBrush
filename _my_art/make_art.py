@@ -13,21 +13,21 @@ MAX_Y = CANVAS_HEIGHT - MARGIN*2
 
 ## CONNECT
 ad = axidraw.AxiDraw() # Initialize class
-# ad.interactive()            # Enter interactive mode
-# connected = ad.connect()    # Open serial port to AxiDraw
-# if not connected:
-#   print('cannot connect to AxiDraw')
-#   sys.exit() # end script
+ad.interactive()            # Enter interactive mode
+connected = ad.connect()    # Open serial port to AxiDraw
+if not connected:
+  print('cannot connect to AxiDraw')
+  sys.exit() # end script
 
-# # ## OPTIONS
-# ad.options.speed_pendown = 20       # Set maximum pen-down speed to 90%
-# ad.options.model = 2                # Set AxiDraw model to V3/A3
-# ad.options.units = 2                # Set units to millimeters
-# # ad.options.units = 1                # Set units to centimeters
-# ad.update()                         # Process changes to options
-# ad.pendown()                          # Raise pen
-# ad.penup()                          # Raise pen
-# ad.goto(0,0)
+# ## OPTIONS
+ad.options.speed_pendown = 20       # Set maximum pen-down speed to 90%
+ad.options.model = 2                # Set AxiDraw model to V3/A3
+ad.options.units = 2                # Set units to millimeters
+# ad.options.units = 1                # Set units to centimeters
+ad.update()                         # Process changes to options
+ad.pendown()                          # Raise pen
+ad.penup()                          # Raise pen
+ad.goto(0,0)
 
 ## FUNCTIONS
 
@@ -202,7 +202,13 @@ def paint_archimedean_spiral(ad, center_x, center_y, total_radius, line_spacing)
   """
   print('paint_archimedean_spiral', center_x, center_y, total_radius, line_spacing)
   spiral_points = generate_archimedean_spiral(center_x, center_y, total_radius, line_spacing)
-  ad.draw_path(spiral_points)
+  try:
+    print("Press Ctrl+C to pause drawing.")
+    ad.draw_path(spiral_points)
+  except KeyboardInterrupt:
+    input("Paused drawing. Press Ctrl+C again to stop, or Enter to continue.")
+    ad.draw_path(spiral_points)
+
 
 def paint_circle(ad, center_x, center_y, total_radius, num_points=360):
   """
@@ -216,7 +222,12 @@ def paint_circle(ad, center_x, center_y, total_radius, num_points=360):
   """
   print('paint_circle', center_x, center_y, total_radius, num_points)
   circle_points = generate_circle(center_x, center_y, total_radius, num_points)
-  ad.draw_path(circle_points)
+  try:
+    print("Press Ctrl+C to pause drawing.")
+    ad.draw_path(circle_points)
+  except KeyboardInterrupt:
+    input("Paused drawing. Press Ctrl+C again to stop, or Enter to continue.")
+    ad.draw_path(circle_points)
 
 def paint_spread(ad, origin_x, origin_y, angle, num_rays, spread, max_bounces=10):
   """
@@ -233,7 +244,12 @@ def paint_spread(ad, origin_x, origin_y, angle, num_rays, spread, max_bounces=10
   print('paint_spread', origin_x, origin_y, angle, num_rays, spread, max_bounces)
   ray_paths = generate_rays(origin_x, origin_y, angle, num_rays, spread, max_bounces)
   for ray in ray_paths:
-    ad.draw_path(ray)
+    try:
+      print("Press Ctrl+C to pause drawing.")
+      ad.draw_path(ray)
+    except KeyboardInterrupt:
+      input("Paused drawing. Press Ctrl+C again to stop, or Enter to continue.")
+      ad.draw_path(ray)
 
 def rand_circle(ad):
   """
@@ -244,7 +260,7 @@ def rand_circle(ad):
   center_x = round(random.uniform(0,MAX_X), 2)
   center_y = round(random.uniform(0,MAX_Y), 2)
   circle_points = generate_circle(center_x, center_y, radius, 720)
-  ad.draw_path(circle_points)
+  paint_circle(ad, center_x, center_y, radius)
 
 def rand_spiral(ad):
   """
@@ -256,7 +272,7 @@ def rand_spiral(ad):
   center_x = random.randint(0, MAX_X)
   center_y = random.randint(0, MAX_Y)
   spiral_points = generate_archimedean_spiral(center_x, center_y, total_radius, line_spacing)
-  ad.draw_path(spiral_points)
+  paint_archimedean_spiral(ad, center_x, center_y, total_radius, line_spacing)
 
 def rand_spread(ad):
   """
@@ -272,9 +288,7 @@ def rand_spread(ad):
   paint_spread(ad, origin_x, origin_y, angle, num_rays, spread, max_bounces)
 
 def pause_and_wait_for_user(ad):
-  """
-  Pause the drawing and wait for user input before continuing
-  """
+  """input the drawing and wait for user  before continuing"""
   print('pause_and_wait_for_user')
   ad.goto(0, 0)
   print("If you want to adjust the pencil or brush and color, do it now.")

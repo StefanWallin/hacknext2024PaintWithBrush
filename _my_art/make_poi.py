@@ -21,9 +21,7 @@ if not connected:
     sys.exit() # end script
 
 # LOCATION = "_my_art/assets/looped_square_mine_1.svg"
-# LOCATION = "_my_art/assets/looped_square_mine_2.svg"
-# LOCATION = "_my_art/assets/signature.svg"
-LOCATION = "_my_art/assets/signature_tl.svg"
+LOCATION = "_my_art/assets/looped_square_mine_2.svg"
 
 FILE = None
 
